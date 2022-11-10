@@ -78,6 +78,7 @@ in
                     expires max;
 
           	  add_header Cache-Control $cache_header always;
+          	  add_header X-Komunix-Fallback-To ${fallbackUpstream} always;
           	  add_header X-Komunix-Cache $upstream_cache_status always;
           	 '';
       };
@@ -142,42 +143,22 @@ in
     dynamicConfigOptions = {
       http = {
         middlewares = {
-          cachex_index = {
+          cachex = {
             headers.customResponseHeaders.server = "${komunixServer}";
-          };
-
-          cachex_fallback = {
-            headers.customResponseHeaders."X-Komunix-Fallback-To" = "${fallbackUpstream}";
           };
         };
 
         routers = {
           cachex = {
             rule = "Host(`${cachexDomain}`) && PathPrefix(`/`)";
-            service = "cachex_fallback";
-            priority = 1;
-            middlewares = [ "cachex_index" "cachex_fallback" ];
-          };
-
-          cachex_index = {
-            rule = "Host(`${cachexDomain}`) && Path(`/`)";
-            service = "cachex_index";
-            priority = 1337;
-            middlewares = [ "cachex_index" ];
+            service = "cachex";
+            middlewares = [ "cachex" ];
           };
         };
 
         services = {
           cachex.loadBalancer.servers = [
             { url = "http://127.0.0.1:8080/"; }
-          ];
-
-          cachex_fallback.loadBalancer.servers = [
-            { url = "http://127.0.0.1:8080/"; }
-          ];
-
-          cachex_index.loadBalancer.servers = [
-            { url = "http://127.0.0.1:2022/"; }
           ];
         };
       };
