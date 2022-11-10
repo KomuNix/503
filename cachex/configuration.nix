@@ -10,6 +10,7 @@ in
 {
   imports = [
     ./hardware-configuration.nix
+    ./cachex_index.nix
   ];
 
   boot.loader.systemd-boot.enable = true;
