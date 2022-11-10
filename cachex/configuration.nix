@@ -175,7 +175,7 @@ in
             { url = "http://127.0.0.1:8080/"; }
           ];
 
-          cachex_web.loadBalancer.servers = [
+          cachex_index.loadBalancer.servers = [
             { url = "http://127.0.0.1:2022/"; }
           ];
         };
