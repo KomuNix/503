@@ -57,7 +57,6 @@ in
       ];
 
       locations."/" = {
-        root = "/srv/www/cachex_index";
 
         extraConfig = ''
                     expires max;
